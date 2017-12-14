@@ -112,10 +112,12 @@ var TypewriterLoop = function (_React$Component) {
 
     _this.state = {
       activeString: 'test',
-      stringCounter: 0
+      stringCounter: 0,
+      typedString: ''
     };
 
     _this.loopStrings = _this.loopStrings.bind(_this);
+    _this.animateLetters = _this.animateLetters.bind(_this);
     return _this;
   }
 
@@ -124,6 +126,8 @@ var TypewriterLoop = function (_React$Component) {
     value: function componentDidMount() {
 
       this.loopStrings();
+
+      this.animateLetters('this is a test string that should iterate out one letter at a time');
     }
   }, {
     key: 'loopStrings',
@@ -136,18 +140,39 @@ var TypewriterLoop = function (_React$Component) {
 
 
       window.setInterval(function () {
+
         _this2.setState({ activeString: typedStrings[_this2.state.stringCounter] });
+
         if (_this2.state.stringCounter >= typedStrings.length - 1) {
           _this2.setState({
             stringCounter: 0
           });
         } else {
-          var augment = _this2.state.stringCounter + 1;
           _this2.setState({
             stringCounter: _this2.state.stringCounter + 1
           });
         }
       }, 2000);
+    }
+  }, {
+    key: 'animateLetters',
+    value: function animateLetters(string) {
+      var _this3 = this;
+
+      var ar = string.split('');
+
+      var letterCounter = 0;
+
+      window.setInterval(function () {
+        if (letterCounter != ar.length) {
+          _this3.setState({
+            typedString: _this3.state.typedString + ar[letterCounter]
+          });
+          letterCounter++;
+        } else {
+          return;
+        }
+      }, 100);
     }
   }, {
     key: 'render',
@@ -157,7 +182,26 @@ var TypewriterLoop = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         { className: className },
-        this.state.activeString
+        _react2.default.createElement(
+          'h2',
+          null,
+          'Here we\'re looping strings'
+        ),
+        _react2.default.createElement(
+          'p',
+          null,
+          this.state.activeString
+        ),
+        _react2.default.createElement(
+          'h2',
+          null,
+          'And here we\'re animating letters'
+        ),
+        _react2.default.createElement(
+          'p',
+          null,
+          this.state.typedString
+        )
       );
     }
   }]);

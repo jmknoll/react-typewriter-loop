@@ -8,28 +8,33 @@ class TypewriterLoop extends React.Component {
 
     this.state = {
       activeString: 'test',
-      stringCounter: 0
+      stringCounter: 0,
+      typedString: ''
     }
 
     this.loopStrings = this.loopStrings.bind(this);
+    this.animateLetters = this.animateLetters.bind(this);
   }
 
   componentDidMount() {
 
     this.loopStrings();
+
+    this.animateLetters('this is a test string that should iterate out one letter at a time')
   }
 
   loopStrings() {
     const { typedStrings, delay } = this.props;
 
     window.setInterval( () => {
+
       this.setState({activeString: typedStrings[this.state.stringCounter]});
+
       if (this.state.stringCounter >= typedStrings.length - 1){
         this.setState({
           stringCounter: 0,
         });
       } else {
-        let augment = this.state.stringCounter + 1
         this.setState({
           stringCounter: this.state.stringCounter + 1
         })
@@ -37,12 +42,33 @@ class TypewriterLoop extends React.Component {
     }, 2000)
   }
 
+  animateLetters(string) {
+    let ar = string.split('');
+
+    let letterCounter = 0;
+
+    window.setInterval( () => {
+      if (letterCounter != ar.length){
+        this.setState({
+          typedString: this.state.typedString + ar[letterCounter]
+        });
+        letterCounter ++
+      } else {
+        return
+      }
+    }, 100)
+
+  }
+
 
   render() {
     const { className } = this.props;
     return (
       <div className={className}>
-        {this.state.activeString}
+        <h2>Here we're looping strings</h2>
+        <p>{this.state.activeString}</p>
+        <h2>And here we're animating letters</h2>
+        <p>{this.state.typedString}</p>
       </div>
     );
   }
