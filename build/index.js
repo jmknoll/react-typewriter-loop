@@ -110,30 +110,54 @@ var TypewriterLoop = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (TypewriterLoop.__proto__ || Object.getPrototypeOf(TypewriterLoop)).call(this, props));
 
-    _this.renderTypedStrings = _this.renderTypedStrings.bind(_this);
+    _this.state = {
+      activeString: 'test',
+      stringCounter: 0
+    };
+
+    _this.loopStrings = _this.loopStrings.bind(_this);
     return _this;
   }
 
   _createClass(TypewriterLoop, [{
-    key: 'renderTypedStrings',
-    value: function renderTypedStrings() {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+
+      this.loopStrings();
+    }
+  }, {
+    key: 'loopStrings',
+    value: function loopStrings() {
+      var _this2 = this;
+
       var _props = this.props,
           typedStrings = _props.typedStrings,
           delay = _props.delay;
 
-      return _react2.default.createElement(
-        'h1',
-        null,
-        typedStrings[0]
-      );
+
+      window.setInterval(function () {
+        _this2.setState({ activeString: typedStrings[_this2.state.stringCounter] });
+        if (_this2.state.stringCounter >= typedStrings.length - 1) {
+          _this2.setState({
+            stringCounter: 0
+          });
+        } else {
+          var augment = _this2.state.stringCounter + 1;
+          _this2.setState({
+            stringCounter: _this2.state.stringCounter + 1
+          });
+        }
+      }, 2000);
     }
   }, {
     key: 'render',
     value: function render() {
+      var className = this.props.className;
+
       return _react2.default.createElement(
         'div',
-        null,
-        this.renderTypedStrings()
+        { className: className },
+        this.state.activeString
       );
     }
   }]);
@@ -145,6 +169,7 @@ exports.default = TypewriterLoop;
 
 /* props
 
+className: class name
 typedStrings: array of strings to type out
 typeSpeed: a number to indicate typing speed, 0 - 100, 100 is instant
 deleteSpeed: a number to indicate deletion speed, 0 - 100, 100 is instant
@@ -155,6 +180,7 @@ cursor: boolean to indicate whether cursor should show
 */
 
 TypewriterLoop.defaultProps = {
+  className: 'typewriter-loop',
   typedStrings: ['string1', 'string2'],
   typeSpeed: 50,
   deleteSpeed: 50,
@@ -164,6 +190,7 @@ TypewriterLoop.defaultProps = {
 };
 
 TypewriterLoop.PropTypes = {
+  className: _propTypes2.default.string,
   typedStrings: _propTypes2.default.arrayOf(_propTypes2.default.string),
   typeSpeed: _propTypes2.default.number,
   deleteSpeed: _propTypes2.default.number,

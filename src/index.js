@@ -5,19 +5,44 @@ class TypewriterLoop extends React.Component {
 
   constructor(props) {
     super(props);
-    this.renderTypedStrings = this.renderTypedStrings.bind(this);
+
+    this.state = {
+      activeString: 'test',
+      stringCounter: 0
+    }
+
+    this.loopStrings = this.loopStrings.bind(this);
   }
 
-  renderTypedStrings() {
-    const { typedStrings, delay } = this.props
-    return <h1>{typedStrings[0]}</h1>
+  componentDidMount() {
+
+    this.loopStrings();
+  }
+
+  loopStrings() {
+    const { typedStrings, delay } = this.props;
+
+    window.setInterval( () => {
+      this.setState({activeString: typedStrings[this.state.stringCounter]});
+      if (this.state.stringCounter >= typedStrings.length - 1){
+        this.setState({
+          stringCounter: 0,
+        });
+      } else {
+        let augment = this.state.stringCounter + 1
+        this.setState({
+          stringCounter: this.state.stringCounter + 1
+        })
+      }
+    }, 2000)
   }
 
 
   render() {
+    const { className } = this.props;
     return (
-      <div>
-        {this.renderTypedStrings()}
+      <div className={className}>
+        {this.state.activeString}
       </div>
     );
   }
@@ -27,6 +52,7 @@ export default TypewriterLoop;
 
 /* props
 
+className: class name
 typedStrings: array of strings to type out
 typeSpeed: a number to indicate typing speed, 0 - 100, 100 is instant
 deleteSpeed: a number to indicate deletion speed, 0 - 100, 100 is instant
@@ -37,6 +63,7 @@ cursor: boolean to indicate whether cursor should show
 */
 
 TypewriterLoop.defaultProps = {
+  className: 'typewriter-loop',
   typedStrings: ['string1', 'string2'],
   typeSpeed: 50,
   deleteSpeed: 50,
@@ -46,6 +73,7 @@ TypewriterLoop.defaultProps = {
 };
 
 TypewriterLoop.PropTypes = {
+  className: PropTypes.string,
   typedStrings: PropTypes.arrayOf(PropTypes.string),
   typeSpeed: PropTypes.number,
   deleteSpeed: PropTypes.number,
