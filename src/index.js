@@ -43,21 +43,88 @@ class TypewriterLoop extends React.Component {
   }
 
   animateLetters(string) {
-    let ar = string.split('');
+    const typingSpeed = 100;
+    const delay = 1000;
 
+    let ar = string.split('');
     let letterCounter = 0;
 
-    window.setInterval( () => {
-      if (letterCounter != ar.length){
-        this.setState({
-          typedString: this.state.typedString + ar[letterCounter]
-        });
-        letterCounter ++
+    //implement with setTimeout instead
+    for ( let i = 0; i < ar.length; i++ ) {
+      window.setTimeout( () => {
+        if (letterCounter <= ar.length - 1){
+          this.setState({
+            typedString: this.state.typedString + ar[letterCounter]
+          });
+          letterCounter ++
+        } else {
+          return;
+        }
+      }, typingSpeed * (i + 1))
+    }
+
+    for ( let i = 0; i < ar.length; i++ ) {
+      window.setTimeout( () => {
+        if ( letterCounter >= 0) {
+          let str = this.state.typedString
+          let newstr = str.substring(0, str.length - 1);
+          this.setState({
+            typedString: newstr
+          })
+        } else {
+          currentAction = 'typing';
+          return;
+        }
+      }, typingSpeed * (i + 1 + ar.length) + delay )
+    }
+
+
+
+
+
+
+
+    //write text
+    /*
+    if (currentAction === 'typing'){
+      let typeInt = window.setInterval( () => {
+        if (letterCounter <= ar.length - 1){
+          this.setState({
+            typedString: this.state.typedString + ar[letterCounter]
+          });
+          letterCounter ++
+        } else {
+          currentAction = 'erasing';
+          return;
+        }
+      }, 100)
+    } else {
+      window.clearInterval(typeInt);
+    }
+
+    let eraseInt;
+
+    //erase text
+    if (currentAction === 'erasing') {
+      let eraseInt = window.setInterval( () => {
+        if ( letterCounter >= 0) {
+          let newstr = this.state.typedString.substring(0, str.length - 1);
+          this.setState({
+            typedString: newstr
+          })
+        } else {
+          currentAction = 'typing';
+          return;
+        }
+      }, 100)
+    } else {
+     if (eraseInt) {
+      window.clearInterval(eraseInt)
       } else {
         return
       }
-    }, 100)
-
+    }
+    */
   }
 
 
@@ -69,6 +136,7 @@ class TypewriterLoop extends React.Component {
         <p>{this.state.activeString}</p>
         <h2>And here we're animating letters</h2>
         <p>{this.state.typedString}</p>
+        <h2>And here we're combining them both</h2>
       </div>
     );
   }

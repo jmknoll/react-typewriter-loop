@@ -159,20 +159,80 @@ var TypewriterLoop = function (_React$Component) {
     value: function animateLetters(string) {
       var _this3 = this;
 
-      var ar = string.split('');
+      var typingSpeed = 100;
+      var delay = 1000;
 
+      var ar = string.split('');
       var letterCounter = 0;
 
-      window.setInterval(function () {
-        if (letterCounter != ar.length) {
-          _this3.setState({
-            typedString: _this3.state.typedString + ar[letterCounter]
-          });
-          letterCounter++;
+      //implement with setTimeout instead
+      for (var i = 0; i < ar.length; i++) {
+        window.setTimeout(function () {
+          if (letterCounter <= ar.length - 1) {
+            _this3.setState({
+              typedString: _this3.state.typedString + ar[letterCounter]
+            });
+            letterCounter++;
+          } else {
+            return;
+          }
+        }, typingSpeed * (i + 1));
+      }
+
+      for (var _i = 0; _i < ar.length; _i++) {
+        window.setTimeout(function () {
+          if (letterCounter >= 0) {
+            var str = _this3.state.typedString;
+            var newstr = str.substring(0, str.length - 1);
+            _this3.setState({
+              typedString: newstr
+            });
+          } else {
+            currentAction = 'typing';
+            return;
+          }
+        }, typingSpeed * (_i + 1 + ar.length) + delay);
+      }
+
+      //write text
+      /*
+      if (currentAction === 'typing'){
+        let typeInt = window.setInterval( () => {
+          if (letterCounter <= ar.length - 1){
+            this.setState({
+              typedString: this.state.typedString + ar[letterCounter]
+            });
+            letterCounter ++
+          } else {
+            currentAction = 'erasing';
+            return;
+          }
+        }, 100)
+      } else {
+        window.clearInterval(typeInt);
+      }
+       let eraseInt;
+       //erase text
+      if (currentAction === 'erasing') {
+        let eraseInt = window.setInterval( () => {
+          if ( letterCounter >= 0) {
+            let newstr = this.state.typedString.substring(0, str.length - 1);
+            this.setState({
+              typedString: newstr
+            })
+          } else {
+            currentAction = 'typing';
+            return;
+          }
+        }, 100)
+      } else {
+       if (eraseInt) {
+        window.clearInterval(eraseInt)
         } else {
-          return;
+          return
         }
-      }, 100);
+      }
+      */
     }
   }, {
     key: 'render',
@@ -201,6 +261,11 @@ var TypewriterLoop = function (_React$Component) {
           'p',
           null,
           this.state.typedString
+        ),
+        _react2.default.createElement(
+          'h2',
+          null,
+          'And here we\'re combining them both'
         )
       );
     }
