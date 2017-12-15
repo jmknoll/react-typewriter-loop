@@ -12,46 +12,66 @@ class TypewriterLoop extends React.Component {
       typedString: ''
     }
 
-    this.loopArray = this.loopArray.bind(this);
     this.loopStrings = this.loopStrings.bind(this);
     this.animateLetters = this.animateLetters.bind(this);
   }
 
   componentDidMount() {
 
-    this.loopArray();
-
-    //this.animateLetters('this is a test string that should iterate out one letter at a time')
+    this.loopStrings();
   }
 
-  loopArray() {
-    const { typedStrings, delay, typeSpeed } = this.props;
-
-    // delay is all pauses and time taken to write each letter
-    let totalDelay = (typedStrings.length * 2)
-      + typedStrings.join('').split('').length * typeSpeed
-
-   // window.setInterval( () => {
-      this.loopStrings();
-    //}, totalDelay)
-  }
 
   loopStrings() {
-    const { typedStrings, delay } = this.props;
+    const { typedStrings, delay, typeSpeed } = this.props;
 
-    for ( let i = 0; i < typedStrings.length; i ++ ) {
-      window.setTimeout( () => {
-        this.animateLetters(typedStrings[this.state.stringCounter])
-        this.setState({
-          stringCounter: this.state.stringCounter++
-        })
-      }, 4000 * (i + 1) )
+    function calculateDelay(index) {
+      // get # of letters up to index
+      let count = typedStrings.slice(0, index).join('').split('').length
+      // and calculate delay from total # of letters
+      let totalDelay = (typeSpeed * count * 2) + (delay * index * 2);
+      return totalDelay
     }
+
+    let stringCounter = 0;
+
+    for (let i = 0; i < typedStrings.length; i++) {
+      window.setTimeout( () => {
+        this.animateLetters(typedStrings[stringCounter])
+        stringCounter++
+        if (stringCounter === typedStrings.length) {
+          window.setTimeout(() => {
+            this.loopStrings();
+          }, (delay * 2) + (typedStrings[i].length * typeSpeed * 2) )
+        }
+      }, calculateDelay(i))
+    }
+
+    /*
+
+    window.setInterval( () => {
+
+      this.setState({activeString: typedStrings[this.state.stringCounter]});
+
+      this.animateLetters(typedStrings[this.state.stringCounter])
+
+
+      if (this.state.stringCounter >= typedStrings.length - 1){
+        this.setState({
+          stringCounter: 0,
+        });
+      } else {
+        this.setState({
+          stringCounter: this.state.stringCounter + 1
+        })
+      };
+    }, 5000)
+    */
   }
 
   animateLetters(string) {
-    console.log('animating letters')
-    const { delay, typingSpeed } = this.props;
+    const typingSpeed = 100;
+    const delay = 1000;
 
     let ar = string.split('');
     let letterCounter = 0;
@@ -112,7 +132,7 @@ cursor: boolean to indicate whether cursor should show
 
 TypewriterLoop.defaultProps = {
   className: 'typewriter-loop',
-  typedStrings: ['string1', 'string2', 'string3', 'string4'],
+  typedStrings: ['react typewriter loop', 'can display products, services, or features', 'of your business', 'starting from today'],
   typeSpeed: 100,
   deleteSpeed: 100,
   delay: 1000,

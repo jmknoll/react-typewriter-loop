@@ -116,7 +116,6 @@ var TypewriterLoop = function (_React$Component) {
       typedString: ''
     };
 
-    _this.loopArray = _this.loopArray.bind(_this);
     _this.loopStrings = _this.loopStrings.bind(_this);
     _this.animateLetters = _this.animateLetters.bind(_this);
     return _this;
@@ -126,55 +125,68 @@ var TypewriterLoop = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
 
-      this.loopArray();
-
-      //this.animateLetters('this is a test string that should iterate out one letter at a time')
-    }
-  }, {
-    key: 'loopArray',
-    value: function loopArray() {
-      var _props = this.props,
-          typedStrings = _props.typedStrings,
-          delay = _props.delay,
-          typeSpeed = _props.typeSpeed;
-
-      // delay is all pauses and time taken to write each letter
-
-      var totalDelay = typedStrings.length * 2 + typedStrings.join('').split('').length * typeSpeed;
-
-      // window.setInterval( () => {
       this.loopStrings();
-      //}, totalDelay)
     }
   }, {
     key: 'loopStrings',
     value: function loopStrings() {
       var _this2 = this;
 
-      var _props2 = this.props,
-          typedStrings = _props2.typedStrings,
-          delay = _props2.delay;
+      var _props = this.props,
+          typedStrings = _props.typedStrings,
+          delay = _props.delay,
+          typeSpeed = _props.typeSpeed;
 
+
+      function calculateDelay(index) {
+        // get # of letters up to index
+        var count = typedStrings.slice(0, index).join('').split('').length;
+        // and calculate delay from total # of letters
+        var totalDelay = typeSpeed * count * 2 + delay * index * 2;
+        return totalDelay;
+      }
+
+      var stringCounter = 0;
+
+      var _loop = function _loop(i) {
+        window.setTimeout(function () {
+          _this2.animateLetters(typedStrings[stringCounter]);
+          stringCounter++;
+          if (stringCounter === typedStrings.length) {
+            window.setTimeout(function () {
+              _this2.loopStrings();
+            }, delay * 2 + typedStrings[i].length * typeSpeed * 2);
+          }
+        }, calculateDelay(i));
+      };
 
       for (var i = 0; i < typedStrings.length; i++) {
-        window.setTimeout(function () {
-          _this2.animateLetters(typedStrings[_this2.state.stringCounter]);
-          _this2.setState({
-            stringCounter: _this2.state.stringCounter++
-          });
-        }, 4000 * (i + 1));
+        _loop(i);
       }
+
+      /*
+       window.setInterval( () => {
+         this.setState({activeString: typedStrings[this.state.stringCounter]});
+         this.animateLetters(typedStrings[this.state.stringCounter])
+          if (this.state.stringCounter >= typedStrings.length - 1){
+          this.setState({
+            stringCounter: 0,
+          });
+        } else {
+          this.setState({
+            stringCounter: this.state.stringCounter + 1
+          })
+        };
+      }, 5000)
+      */
     }
   }, {
     key: 'animateLetters',
     value: function animateLetters(string) {
       var _this3 = this;
 
-      console.log('animating letters');
-      var _props3 = this.props,
-          delay = _props3.delay,
-          typingSpeed = _props3.typingSpeed;
-
+      var typingSpeed = 100;
+      var delay = 1000;
 
       var ar = string.split('');
       var letterCounter = 0;
@@ -247,7 +259,7 @@ cursor: boolean to indicate whether cursor should show
 
 TypewriterLoop.defaultProps = {
   className: 'typewriter-loop',
-  typedStrings: ['string1', 'string2', 'string3', 'string4'],
+  typedStrings: ['react typewriter loop', 'can display products, services, or features', 'of your business', 'starting from today'],
   typeSpeed: 100,
   deleteSpeed: 100,
   delay: 1000,
