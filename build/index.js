@@ -116,6 +116,7 @@ var TypewriterLoop = function (_React$Component) {
       typedString: ''
     };
 
+    _this.loopArray = _this.loopArray.bind(_this);
     _this.loopStrings = _this.loopStrings.bind(_this);
     _this.animateLetters = _this.animateLetters.bind(_this);
     return _this;
@@ -125,47 +126,59 @@ var TypewriterLoop = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
 
-      this.loopStrings();
+      this.loopArray();
 
-      this.animateLetters('this is a test string that should iterate out one letter at a time');
+      //this.animateLetters('this is a test string that should iterate out one letter at a time')
+    }
+  }, {
+    key: 'loopArray',
+    value: function loopArray() {
+      var _props = this.props,
+          typedStrings = _props.typedStrings,
+          delay = _props.delay,
+          typeSpeed = _props.typeSpeed;
+
+      // delay is all pauses and time taken to write each letter
+
+      var totalDelay = typedStrings.length * 2 + typedStrings.join('').split('').length * typeSpeed;
+
+      // window.setInterval( () => {
+      this.loopStrings();
+      //}, totalDelay)
     }
   }, {
     key: 'loopStrings',
     value: function loopStrings() {
       var _this2 = this;
 
-      var _props = this.props,
-          typedStrings = _props.typedStrings,
-          delay = _props.delay;
+      var _props2 = this.props,
+          typedStrings = _props2.typedStrings,
+          delay = _props2.delay;
 
 
-      window.setInterval(function () {
-
-        _this2.setState({ activeString: typedStrings[_this2.state.stringCounter] });
-
-        if (_this2.state.stringCounter >= typedStrings.length - 1) {
+      for (var i = 0; i < typedStrings.length; i++) {
+        window.setTimeout(function () {
+          _this2.animateLetters(typedStrings[_this2.state.stringCounter]);
           _this2.setState({
-            stringCounter: 0
+            stringCounter: _this2.state.stringCounter++
           });
-        } else {
-          _this2.setState({
-            stringCounter: _this2.state.stringCounter + 1
-          });
-        }
-      }, 2000);
+        }, 4000 * (i + 1));
+      }
     }
   }, {
     key: 'animateLetters',
     value: function animateLetters(string) {
       var _this3 = this;
 
-      var typingSpeed = 100;
-      var delay = 1000;
+      console.log('animating letters');
+      var _props3 = this.props,
+          delay = _props3.delay,
+          typingSpeed = _props3.typingSpeed;
+
 
       var ar = string.split('');
       var letterCounter = 0;
 
-      //implement with setTimeout instead
       for (var i = 0; i < ar.length; i++) {
         window.setTimeout(function () {
           if (letterCounter <= ar.length - 1) {
@@ -188,51 +201,10 @@ var TypewriterLoop = function (_React$Component) {
               typedString: newstr
             });
           } else {
-            currentAction = 'typing';
             return;
           }
         }, typingSpeed * (_i + 1 + ar.length) + delay);
       }
-
-      //write text
-      /*
-      if (currentAction === 'typing'){
-        let typeInt = window.setInterval( () => {
-          if (letterCounter <= ar.length - 1){
-            this.setState({
-              typedString: this.state.typedString + ar[letterCounter]
-            });
-            letterCounter ++
-          } else {
-            currentAction = 'erasing';
-            return;
-          }
-        }, 100)
-      } else {
-        window.clearInterval(typeInt);
-      }
-       let eraseInt;
-       //erase text
-      if (currentAction === 'erasing') {
-        let eraseInt = window.setInterval( () => {
-          if ( letterCounter >= 0) {
-            let newstr = this.state.typedString.substring(0, str.length - 1);
-            this.setState({
-              typedString: newstr
-            })
-          } else {
-            currentAction = 'typing';
-            return;
-          }
-        }, 100)
-      } else {
-       if (eraseInt) {
-        window.clearInterval(eraseInt)
-        } else {
-          return
-        }
-      }
-      */
     }
   }, {
     key: 'render',
@@ -245,27 +217,12 @@ var TypewriterLoop = function (_React$Component) {
         _react2.default.createElement(
           'h2',
           null,
-          'Here we\'re looping strings'
-        ),
-        _react2.default.createElement(
-          'p',
-          null,
-          this.state.activeString
-        ),
-        _react2.default.createElement(
-          'h2',
-          null,
-          'And here we\'re animating letters'
+          'Here we\'re looping strings (with animation?)'
         ),
         _react2.default.createElement(
           'p',
           null,
           this.state.typedString
-        ),
-        _react2.default.createElement(
-          'h2',
-          null,
-          'And here we\'re combining them both'
         )
       );
     }
@@ -290,9 +247,9 @@ cursor: boolean to indicate whether cursor should show
 
 TypewriterLoop.defaultProps = {
   className: 'typewriter-loop',
-  typedStrings: ['string1', 'string2'],
-  typeSpeed: 50,
-  deleteSpeed: 50,
+  typedStrings: ['string1', 'string2', 'string3', 'string4'],
+  typeSpeed: 100,
+  deleteSpeed: 100,
   delay: 1000,
   loop: true,
   cursor: true

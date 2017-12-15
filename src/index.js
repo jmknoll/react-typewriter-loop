@@ -12,44 +12,50 @@ class TypewriterLoop extends React.Component {
       typedString: ''
     }
 
+    this.loopArray = this.loopArray.bind(this);
     this.loopStrings = this.loopStrings.bind(this);
     this.animateLetters = this.animateLetters.bind(this);
   }
 
   componentDidMount() {
 
-    this.loopStrings();
+    this.loopArray();
 
-    this.animateLetters('this is a test string that should iterate out one letter at a time')
+    //this.animateLetters('this is a test string that should iterate out one letter at a time')
+  }
+
+  loopArray() {
+    const { typedStrings, delay, typeSpeed } = this.props;
+
+    // delay is all pauses and time taken to write each letter
+    let totalDelay = (typedStrings.length * 2)
+      + typedStrings.join('').split('').length * typeSpeed
+
+   // window.setInterval( () => {
+      this.loopStrings();
+    //}, totalDelay)
   }
 
   loopStrings() {
     const { typedStrings, delay } = this.props;
 
-    window.setInterval( () => {
-
-      this.setState({activeString: typedStrings[this.state.stringCounter]});
-
-      if (this.state.stringCounter >= typedStrings.length - 1){
+    for ( let i = 0; i < typedStrings.length; i ++ ) {
+      window.setTimeout( () => {
+        this.animateLetters(typedStrings[this.state.stringCounter])
         this.setState({
-          stringCounter: 0,
-        });
-      } else {
-        this.setState({
-          stringCounter: this.state.stringCounter + 1
+          stringCounter: this.state.stringCounter++
         })
-      }
-    }, 2000)
+      }, 4000 * (i + 1) )
+    }
   }
 
   animateLetters(string) {
-    const typingSpeed = 100;
-    const delay = 1000;
+    console.log('animating letters')
+    const { delay, typingSpeed } = this.props;
 
     let ar = string.split('');
     let letterCounter = 0;
 
-    //implement with setTimeout instead
     for ( let i = 0; i < ar.length; i++ ) {
       window.setTimeout( () => {
         if (letterCounter <= ar.length - 1){
@@ -72,59 +78,10 @@ class TypewriterLoop extends React.Component {
             typedString: newstr
           })
         } else {
-          currentAction = 'typing';
           return;
         }
       }, typingSpeed * (i + 1 + ar.length) + delay )
     }
-
-
-
-
-
-
-
-    //write text
-    /*
-    if (currentAction === 'typing'){
-      let typeInt = window.setInterval( () => {
-        if (letterCounter <= ar.length - 1){
-          this.setState({
-            typedString: this.state.typedString + ar[letterCounter]
-          });
-          letterCounter ++
-        } else {
-          currentAction = 'erasing';
-          return;
-        }
-      }, 100)
-    } else {
-      window.clearInterval(typeInt);
-    }
-
-    let eraseInt;
-
-    //erase text
-    if (currentAction === 'erasing') {
-      let eraseInt = window.setInterval( () => {
-        if ( letterCounter >= 0) {
-          let newstr = this.state.typedString.substring(0, str.length - 1);
-          this.setState({
-            typedString: newstr
-          })
-        } else {
-          currentAction = 'typing';
-          return;
-        }
-      }, 100)
-    } else {
-     if (eraseInt) {
-      window.clearInterval(eraseInt)
-      } else {
-        return
-      }
-    }
-    */
   }
 
 
@@ -132,11 +89,8 @@ class TypewriterLoop extends React.Component {
     const { className } = this.props;
     return (
       <div className={className}>
-        <h2>Here we're looping strings</h2>
-        <p>{this.state.activeString}</p>
-        <h2>And here we're animating letters</h2>
+        <h2>Here we're looping strings (with animation?)</h2>
         <p>{this.state.typedString}</p>
-        <h2>And here we're combining them both</h2>
       </div>
     );
   }
@@ -158,9 +112,9 @@ cursor: boolean to indicate whether cursor should show
 
 TypewriterLoop.defaultProps = {
   className: 'typewriter-loop',
-  typedStrings: ['string1', 'string2'],
-  typeSpeed: 50,
-  deleteSpeed: 50,
+  typedStrings: ['string1', 'string2', 'string3', 'string4'],
+  typeSpeed: 100,
+  deleteSpeed: 100,
   delay: 1000,
   loop: true,
   cursor: true
