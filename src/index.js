@@ -133,7 +133,7 @@ cursor: boolean to indicate whether cursor should show
 
 TypewriterLoop.defaultProps = {
   className: 'typewriter-loop',
-  typedStrings: ['react typewriter loop', 'can display products, services, or features', 'of your business', 'starting from today'],
+  typedStrings: ['react typewriter loop', 'can display products, services, or bonesaws', 'of your business', 'starting from today'],
   typeSpeed: 100,
   deleteSpeed: 100,
   delay: 1000,
