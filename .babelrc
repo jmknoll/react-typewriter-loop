@@ -1,7 +1,8 @@
+/* 
+    ./.babelrc
+*/  
 {
-  "presets": ["env"],
-  "plugins": [
-    "transform-object-rest-spread",
-    "transform-react-jsx"
-  ]
+    "presets":[
+        "es2015", "react"
+    ]
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from "react-dom";
 import PropTypes from 'prop-types';
 
 class TypewriterLoop extends React.Component {
@@ -149,3 +150,6 @@ TypewriterLoop.PropTypes = {
   loop: PropTypes.bool,
   cursor: PropTypes.bool
 };
+
+const wrapper = document.getElementById("root");
+wrapper ? ReactDOM.render(<TypewriterLoop />, wrapper) : false;
