@@ -107,10 +107,10 @@ class TypewriterLoop extends React.Component {
 
 
   render() {
+    console.log(this.props)
     const { className } = this.props;
     return (
       <div className={className}>
-        <h2>Here we're looping strings (with animation?)</h2>
         <p>{this.state.typedString}</p>
       </div>
     );
@@ -150,6 +150,3 @@ TypewriterLoop.PropTypes = {
   loop: PropTypes.bool,
   cursor: PropTypes.bool
 };
-
-const wrapper = document.getElementById("root");
-wrapper ? ReactDOM.render(<TypewriterLoop />, wrapper) : false;
